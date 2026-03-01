@@ -10,7 +10,7 @@
     <style>
         :root { --bg: #0f0f0f; --panel: #1a1a1a; --gold: #d4af37; --text: #f0f0f0; --muted: #888; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg); color: var(--text); font-family: 'Roboto', sans-serif; overflow-x: hidden; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Roboto', sans-serif; }
         
         .tela { display: none; min-height: 100vh; padding: 20px; max-width: 800px; margin: 0 auto; }
         .ativa { display: block; animation: fadeIn 0.4s ease; }
@@ -36,7 +36,6 @@
         .versiculo { margin-bottom: 15px; padding: 8px; border-radius: 5px; }
         .num { color: var(--gold); font-weight: bold; font-size: 0.8em; margin-right: 10px; }
 
-        /* Estilo do Carregando */
         #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; }
         .spinner { border: 4px solid rgba(255, 255, 255, 0.1); border-left-color: var(--gold); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -46,7 +45,7 @@
 
     <div id="loader">
         <div class="spinner"></div>
-        <p style="color: var(--gold)">Sincronizando com a Nuvem...</p>
+        <p style="color: var(--gold)">Sincronizando Bíblia...</p>
     </div>
 
     <div id="tela-livros" class="tela ativa">
@@ -60,7 +59,7 @@
 
     <div id="tela-capitulos" class="tela">
         <div class="top-bar">
-            <button class="back-btn" onclick="irPara('tela-livros')"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="back-btn" onclick="irPara('tela-livros')"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
             <h2 id="nome-livro-topo" class="titulo-livro"></h2>
             <div style="width: 40px;"></div>
         </div>
@@ -87,12 +86,13 @@
 
         async function carregarNuvem() {
             try {
-                // Link alternativo mais estável para evitar bloqueio de CORS
-                const res = await fetch('https://raw.githubusercontent.com/thiagobodruk/biblia/master/json/pt_nvi.json');
+                // USANDO PROXY CDN PARA EVITAR BLOQUEIO E ERRO DE MEMÓRIA
+                const url = 'https://cdn.jsdelivr.net/gh/thiagobodruk/biblia@master/json/pt_nvi.json';
+                const res = await fetch(url);
                 bibliaCompleta = await res.json();
                 document.getElementById('loader').style.display = 'none';
             } catch (err) {
-                document.getElementById('loader').innerHTML = '<p style="color: #ff6b6b; padding: 20px; text-align: center;">Erro ao conectar. <br> Tente usar o Wi-Fi ou recarregar a página.</p>';
+                document.getElementById('loader').innerHTML = '<p style="color: #ff6b6b; padding: 20px; text-align: center;">Erro de Sincronização. <br> Verifique sua internet móvel.</p>';
             }
         }
 
