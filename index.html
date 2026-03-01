@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bíblia Sagrada Premium</title>
+    <title>Bíblia Sagrada Digital</title>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -12,58 +12,55 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg); color: var(--text); font-family: 'Roboto', sans-serif; overflow-x: hidden; }
         
-        /* Telas */
         .tela { display: none; min-height: 100vh; padding: 20px; max-width: 800px; margin: 0 auto; }
         .ativa { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Cabeçalho */
         header { text-align: center; padding: 30px 0; border-bottom: 1px solid #333; margin-bottom: 20px; }
         header h1 { font-family: 'Merriweather', serif; color: var(--gold); font-size: 26px; }
 
-        /* Seletor de Testamento */
         .tabs { display: flex; gap: 10px; margin-bottom: 25px; }
         .tab { flex: 1; padding: 12px; border: none; background: var(--panel); color: var(--muted); border-radius: 8px; font-weight: bold; cursor: pointer; }
         .tab.active { background: var(--gold); color: #000; }
 
-        /* Grade de Livros e Capítulos */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
         .item { background: var(--panel); padding: 15px 5px; border-radius: 8px; text-align: center; cursor: pointer; border: 1px solid #333; transition: 0.2s; font-size: 14px; }
         .item:active { transform: scale(0.95); border-color: var(--gold); }
         .grid-caps { grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); }
 
-        /* Barra de Topo Leitura */
         .top-bar { display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--bg); padding: 15px 0; border-bottom: 1px solid #333; z-index: 100; }
         .back-btn { background: none; border: none; color: var(--gold); font-size: 20px; cursor: pointer; }
         .titulo-livro { font-family: 'Merriweather', serif; font-size: 18px; color: var(--gold); }
-        .font-tools { display: flex; gap: 10px; }
-        .tool-btn { background: var(--panel); border: none; color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-
-        /* Texto da Bíblia */
+        
         #conteudo-biblia { margin-top: 20px; line-height: 1.8; font-family: 'Merriweather', serif; padding-bottom: 100px; }
-        .versiculo { margin-bottom: 15px; padding: 8px; border-radius: 5px; cursor: pointer; transition: 0.2s; }
-        .versiculo:active { background: rgba(212, 175, 55, 0.1); }
-        .num { color: var(--gold); font-weight: bold; font-size: 0.8em; margin-right: 10px; font-family: 'Roboto', sans-serif; }
-        .marcado { background: rgba(212, 175, 55, 0.2) !important; border-left: 3px solid var(--gold); }
+        .versiculo { margin-bottom: 15px; padding: 8px; border-radius: 5px; }
+        .num { color: var(--gold); font-weight: bold; font-size: 0.8em; margin-right: 10px; }
 
-        /* Loading */
-        .loading { text-align: center; padding: 50px; color: var(--gold); }
+        /* Estilo do Carregando */
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; }
+        .spinner { border: 4px solid rgba(255, 255, 255, 0.1); border-left-color: var(--gold); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
+    <div id="loader">
+        <div class="spinner"></div>
+        <p style="color: var(--gold)">Sincronizando com a Nuvem...</p>
+    </div>
+
     <div id="tela-livros" class="tela ativa">
         <header><h1>Bíblia Sagrada</h1></header>
         <div class="tabs">
-            <button class="tab active" onclick="mudarAba('vt', this)">Antigo Testamento</button>
-            <button class="tab" onclick="mudarAba('nt', this)">Novo Testamento</button>
+            <button class="tab active" onclick="mudarAba('vt', this)">Antigo</button>
+            <button class="tab" onclick="mudarAba('nt', this)">Novo</button>
         </div>
         <div id="lista-livros" class="grid"></div>
     </div>
 
     <div id="tela-capitulos" class="tela">
         <div class="top-bar">
-            <button class="back-btn" onclick="irPara('tela-livros')"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <button class="back-btn" onclick="irPara('tela-livros')"><i class="fa-solid fa-chevron-left"></i></button>
             <h2 id="nome-livro-topo" class="titulo-livro"></h2>
             <div style="width: 40px;"></div>
         </div>
@@ -72,12 +69,9 @@
 
     <div id="tela-leitura" class="tela">
         <div class="top-bar">
-            <button class="back-btn" onclick="voltarParaCaps()"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="back-btn" onclick="irPara('tela-capitulos')"><i class="fa-solid fa-chevron-left"></i></button>
             <h2 id="titulo-cap" class="titulo-livro"></h2>
-            <div class="font-tools">
-                <button class="tool-btn" onclick="ajustarFonte(-2)">A-</button>
-                <button class="tool-btn" onclick="ajustarFonte(2)">A+</button>
-            </div>
+            <div style="width: 40px;"></div>
         </div>
         <div id="conteudo-biblia"></div>
     </div>
@@ -90,16 +84,15 @@
 
         let bibliaCompleta = null;
         let livroSelecionado = null;
-        let fonteSize = 18;
 
-        // PUXAR A BÍBLIA DA NUVEM (ESTA É A PARTE MAIS IMPORTANTE)
         async function carregarNuvem() {
             try {
+                // Link alternativo mais estável para evitar bloqueio de CORS
                 const res = await fetch('https://raw.githubusercontent.com/thiagobodruk/biblia/master/json/pt_nvi.json');
                 bibliaCompleta = await res.json();
-                console.log("Conectado com sucesso à base de dados!");
+                document.getElementById('loader').style.display = 'none';
             } catch (err) {
-                alert("Erro de conexão. Certifique-se de estar usando Vercel, GitHub ou CodePen.");
+                document.getElementById('loader').innerHTML = '<p style="color: #ff6b6b; padding: 20px; text-align: center;">Erro ao conectar. <br> Tente usar o Wi-Fi ou recarregar a página.</p>';
             }
         }
 
@@ -122,10 +115,6 @@
         }
 
         function abrirCapitulos(nome) {
-            if(!bibliaCompleta) {
-                alert("Aguarde um instante, a Bíblia ainda está carregando da nuvem...");
-                return;
-            }
             livroSelecionado = bibliaCompleta.find(l => l.name === nome);
             irPara('tela-capitulos');
             document.getElementById('nome-livro-topo').innerText = nome;
@@ -149,7 +138,6 @@
                 const p = document.createElement('p');
                 p.className = 'versiculo';
                 p.innerHTML = `<span class="num">${i+1}</span> ${texto}`;
-                p.onclick = () => p.classList.toggle('marcado');
                 container.appendChild(p);
             });
             window.scrollTo(0,0);
@@ -160,14 +148,6 @@
             document.getElementById(id).classList.add('ativa');
         }
 
-        function voltarParaCaps() { irPara('tela-capitulos'); }
-
-        function ajustarFonte(n) {
-            fonteSize += n;
-            document.getElementById('conteudo-biblia').style.fontSize = fonteSize + 'px';
-        }
-
-        // INICIAR APLICAÇÃO
         carregarNuvem();
         renderizarLivros('vt');
     </script>
