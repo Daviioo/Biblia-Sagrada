@@ -3,43 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bíblia Premium</title>
+    <title>Bíblia Premium Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #0f0f0f; --panel: #1a1a1a; --gold: #d4af37; --text: #f0f0f0; }
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background-color: var(--bg); color: var(--text); font-family: 'Roboto', sans-serif; }
-        
-        .header-fixo {
-            position: sticky; top: 0; background: var(--panel); 
-            padding: 10px 20px; display: flex; justify-content: space-between; 
-            align-items: center; border-bottom: 2px solid var(--gold); z-index: 1000;
-        }
-        .logo-app { color: var(--gold); font-family: 'Merriweather', serif; font-weight: bold; font-size: 18px; }
-        .controles { display: flex; gap: 8px; align-items: center; }
-        .btn-fonte { background: #000; color: var(--gold); border: 1px solid var(--gold); padding: 5px 10px; border-radius: 5px; font-weight: bold; cursor: pointer; }
-        .seletor-versao { background: #000; color: var(--gold); border: 1px solid var(--gold); padding: 5px; border-radius: 5px; font-weight: bold; font-size: 13px; }
-
-        .busca-container { padding: 15px 20px; background: #151515; }
-        #input-busca { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #333; background: var(--panel); color: white; font-size: 16px; }
-
+        .header-fixo { position: sticky; top: 0; background: var(--panel); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); z-index: 1000; }
+        .logo-app { color: var(--gold); font-family: 'Merriweather', serif; font-weight: bold; font-size: 16px; }
+        .controles { display: flex; gap: 5px; }
+        .btn-f { background: #000; color: var(--gold); border: 1px solid var(--gold); padding: 5px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .sel-v { background: #000; color: var(--gold); border: 1px solid var(--gold); padding: 5px; border-radius: 4px; font-size: 12px; }
         .tela { display: none; padding: 20px; max-width: 800px; margin: 0 auto; }
-        .ativa { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 10px; }
-        .grid-pequena { grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)); }
-        
-        .item { background: var(--panel); padding: 18px 5px; border-radius: 8px; text-align: center; cursor: pointer; border: 1px solid #333; font-weight: bold; }
-        .item:active { background: #222; border-color: var(--gold); }
-        
-        .top-nav { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
-        .back-btn { color: var(--gold); font-size: 26px; cursor: pointer; background: none; border: none; }
-        
-        #conteudo { line-height: 1.8; font-family: 'Merriweather', serif; font-size: 18px; padding-bottom: 80px; transition: 0.2s; }
-        .versiculo { margin-bottom: 16px; padding: 8px; border-radius: 5px; }
-        .num { color: var(--gold); font-weight: bold; margin-right: 12px; font-size: 0.8em; }
-        .destaque { background: rgba(212, 175, 55, 0.15); border-left: 3px solid var(--gold); }
+        .ativa { display: block; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; margin-top: 15px; }
+        .grid-v { grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)); }
+        .item { background: var(--panel); padding: 15px 5px; border-radius: 8px; text-align: center; cursor: pointer; border: 1px solid #333; font-weight: bold; transition: 0.2s; }
+        .item:active { background: #222; border-color: var(--gold); transform: scale(0.95); }
+        .nav { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .btn-b { color: var(--gold); font-size: 24px; cursor: pointer; background: none; border: none; }
+        #conteudo { line-height: 1.8; font-family: 'Merriweather', serif; font-size: 18px; padding-bottom: 50px; }
+        .versiculo { margin-bottom: 15px; }
+        .num { color: var(--gold); font-weight: bold; margin-right: 10px; font-size: 0.8em; }
+        .destaque { background: rgba(212, 175, 55, 0.2); border-left: 3px solid var(--gold); padding-left: 5px; }
+        .msg { text-align: center; color: var(--gold); padding: 20px; }
     </style>
 </head>
 <body>
@@ -47,139 +34,104 @@
     <div class="header-fixo">
         <div class="logo-app">Bíblia Premium</div>
         <div class="controles">
-            <button class="btn-fonte" onclick="mudarFonte(-2)">A-</button>
-            <button class="btn-fonte" onclick="mudarFonte(2)">A+</button>
-            <select id="global-versao" class="seletor-versao" onchange="aoMudarVersao()">
-                <option value="almeida">Almeida</option>
-                <option value="nvi">NVI</option>
+            <button class="btn-f" onclick="mudarF(-2)">A-</button>
+            <button class="btn-f" onclick="mudarF(2)">A+</button>
+            <select id="v-sel" class="sel-v" onchange="trocarV()">
+                <option value="nvi">NVI (Nova Versão)</option>
+                <option value="acf">Almeida (ACF)</option>
+                <option value="ara">Almeida (ARA)</option>
             </select>
         </div>
     </div>
 
-    <div id="tela-livros" class="tela ativa">
-        <div class="busca-container">
-            <input type="text" id="input-busca" placeholder="🔍 Buscar livro..." onkeyup="filtrarLivros()">
-        </div>
-        <div id="lista-livros" class="grid"></div>
+    <div id="t-livros" class="tela ativa">
+        <input type="text" id="busca" placeholder="🔍 Buscar livro..." onkeyup="filtrar()" style="width:100%; padding:12px; border-radius:8px; border:1px solid #333; background:#151515; color:white; margin-bottom:10px;">
+        <div id="l-livros" class="grid"></div>
     </div>
 
-    <div id="tela-capitulos" class="tela">
-        <div class="top-nav">
-            <button class="back-btn" onclick="irPara('tela-livros')">←</button>
-            <h2 id="nome-livro" style="color: var(--gold)"></h2>
-        </div>
-        <div id="lista-capitulos" class="grid grid-pequena"></div>
+    <div id="t-caps" class="tela">
+        <div class="nav"><button class="btn-b" onclick="ir('t-livros')">←</button><h2 id="n-livro" style="color:var(--gold)"></h2></div>
+        <div id="l-caps" class="grid grid-v"></div>
     </div>
 
-    <div id="tela-escolher-versiculo" class="tela">
-        <div class="top-nav">
-            <button class="back-btn" onclick="irPara('tela-capitulos')">←</button>
-            <h2 id="titulo-cap-v" style="color: var(--gold)"></h2>
-        </div>
-        <div id="lista-versiculos-grade" class="grid grid-pequena"></div>
+    <div id="t-vers" class="tela">
+        <div class="nav"><button class="btn-b" onclick="ir('t-caps')">←</button><h2 id="n-cap-v" style="color:var(--gold)"></h2></div>
+        <div id="l-vers" class="grid grid-v"></div>
     </div>
 
-    <div id="tela-leitura" class="tela">
-        <div class="top-nav">
-            <button class="back-btn" onclick="irPara('tela-escolher-versiculo')">←</button>
-            <h2 id="nome-cap-leitura" style="color: var(--gold)"></h2>
-        </div>
+    <div id="t-ler" class="tela">
+        <div class="nav"><button class="btn-b" onclick="ir('t-vers')">←</button><h2 id="n-ler" style="color:var(--gold)"></h2></div>
         <div id="conteudo"></div>
     </div>
 
     <script>
-        const dados = [
-            {n:"Gênesis", i:"Genesis", c:50}, {n:"Êxodo", i:"Exodus", c:40}, {n:"Levítico", i:"Leviticus", c:27}, {n:"Números", i:"Numbers", c:36}, {n:"Deuteronômio", i:"Deuteronomy", c:34}, {n:"Josué", i:"Joshua", c:24}, {n:"Juízes", i:"Judges", c:21}, {n:"Rute", i:"Ruth", c:4}, {n:"1 Samuel", i:"1 Samuel", c:31}, {n:"2 Samuel", i:"2 Samuel", c:24}, {n:"1 Reis", i:"1 Kings", c:22}, {n:"2 Reis", i:"2 Kings", c:25}, {n:"1 Crônicas", i:"1 Chronicles", c:29}, {n:"2 Crônicas", i:"2 Chronicles", c:36}, {n:"Esdras", i:"Ezra", c:10}, {n:"Neemias", i:"Nehemiah", c:13}, {n:"Ester", i:"Esther", c:10}, {n:"Jó", i:"Job", c:42}, {n:"Salmos", i:"Psalms", c:150}, {n:"Provérbios", i:"Proverbs", c:31}, {n:"Eclesiastes", i:"Ecclesiastes", c:12}, {n:"Cantares", i:"Song of Solomon", c:8}, {n:"Isaías", i:"Isaiah", c:66}, {n:"Jeremias", i:"Jeremiah", c:52}, {n:"Lamentações", i:"Lamentations", c:5}, {n:"Ezequiel", i:"Ezekiel", c:48}, {n:"Daniel", i:"Daniel", c:12}, {n:"Oseias", i:"Hosea", c:14}, {n:"Joel", i:"Joel", c:3}, {n:"Amós", i:"Amos", c:9}, {n:"Obadias", i:"Obadiah", c:1}, {n:"Jonas", i:"Jonah", c:4}, {n:"Miqueias", i:"Micah", c:7}, {n:"Naum", i:"Nahum", c:3}, {n:"Habacuque", i:"Habakkuk", c:3}, {n:"Sofonias", i:"Zephaniah", c:3}, {n:"Ageu", i:"Haggai", c:2}, {n:"Zacarias", i:"Zechariah", c:14}, {n:"Malaquias", i:"Malachi", c:4},
-            {n:"Mateus", i:"Matthew", c:28}, {n:"Marcos", i:"Mark", c:16}, {n:"Lucas", i:"Luke", c:24}, {n:"João", i:"John", c:21}, {n:"Atos", i:"Acts", c:28}, {n:"Romanos", i:"Romans", c:16}, {n:"1 Coríntios", i:"1 Corinthians", c:16}, {n:"2 Coríntios", i:"2 Corinthians", c:13}, {n:"Gálatas", i:"Galatians", c:6}, {n:"Efésios", i:"Ephesians", c:6}, {n:"Filipenses", i:"Philippians", c:4}, {n:"Colossenses", i:"Colossians", c:4}, {n:"1 Tessalonicenses", i:"1 Thessalonians", c:5}, {n:"2 Tessalonicenses", i:"2 Thessalonians", c:3}, {n:"1 Timóteo", i:"1 Timothy", c:6}, {n:"2 Timóteo", i:"2 Timothy", c:4}, {n:"Tito", i:"Titus", c:3}, {n:"Filemom", i:"Philemon", c:1}, {n:"Hebreus", i:"Hebrews", c:13}, {n:"Tiago", i:"James", c:5}, {n:"1 Pedro", i:"1 Peter", c:5}, {n:"2 Pedro", i:"2 Peter", c:3}, {n:"1 João", i:"1 John", c:5}, {n:"2 João", i:"2 John", c:1}, {n:"3 João", i:"3 John", c:1}, {n:"Judas", i:"Jude", c:1}, {n:"Apocalipse", i:"Revelation", c:22}
+        // Mapeamento de nomes e abreviações para Abíblia Digital
+        const biblia = [
+            {n:"Gênesis", a:"gn", c:50}, {n:"Êxodo", a:"ex", c:40}, {n:"Levítico", a:"lv", c:27}, {n:"Números", a:"nm", c:36}, {n:"Deuteronômio", a:"dt", c:34}, {n:"Josué", a:"js", c:24}, {n:"Juízes", a:"jz", c:21}, {n:"Rute", a:"rt", c:4}, {n:"1 Samuel", a:"1sm", c:31}, {n:"2 Samuel", a:"2sm", c:24}, {n:"1 Reis", a:"1rs", c:22}, {n:"2 Reis", a:"2rs", c:25}, {n:"1 Crônicas", a:"1cr", c:29}, {n:"2 Crônicas", a:"2cr", c:36}, {n:"Esdras", a:"ed", c:10}, {n:"Neemias", a:"ne", c:13}, {n:"Ester", a:"et", c:10}, {n:"Jó", a:"job", c:42}, {n:"Salmos", a:"sl", c:150}, {n:"Provérbios", a:"pv", c:31}, {n:"Eclesiastes", a:"ec", c:12}, {n:"Cantares", a:"ct", c:8}, {n:"Isaías", a:"is", c:66}, {n:"Jeremias", a:"jr", c:52}, {n:"Lamentações", a:"lm", c:5}, {n:"Ezequiel", a:"ez", c:48}, {n:"Daniel", a:"dn", c:12}, {n:"Oseias", a:"os", c:14}, {n:"Joel", a:"jl", c:3}, {n:"Amós", a:"am", c:9}, {n:"Obadias", a:"ob", c:1}, {n:"Jonas", a:"jn", c:4}, {n:"Miqueias", a:"mq", c:7}, {n:"Naum", a:"na", c:3}, {n:"Habacuque", a:"hc", c:3}, {n:"Sofonias", a:"sf", c:3}, {n:"Ageu", a:"ag", c:2}, {n:"Zacarias", a:"zc", c:14}, {n:"Malaquias", a:"ml", c:4},
+            {n:"Mateus", a:"mt", c:28}, {n:"Marcos", a:"mc", c:16}, {n:"Lucas", a:"lc", c:24}, {n:"João", a:"jo", c:21}, {n:"Atos", a:"at", c:28}, {n:"Romanos", a:"rm", c:16}, {n:"1 Coríntios", a:"1co", c:16}, {n:"2 Coríntios", a:"2co", c:13}, {n:"Gálatas", a:"gl", c:6}, {n:"Efésios", a:"ef", c:6}, {n:"Filipenses", a:"fp", c:4}, {n:"Colossenses", a:"cl", c:4}, {n:"1 Tessalonicenses", a:"1ts", c:5}, {n:"2 Tessalonicenses", a:"2ts", c:3}, {n:"1 Timóteo", a:"1tm", c:6}, {n:"2 Timóteo", a:"2tm", c:4}, {n:"Tito", a:"tt", c:3}, {n:"Filemom", a:"fm", c:1}, {n:"Hebreus", a:"hb", c:13}, {n:"Tiago", a:"tg", c:5}, {n:"1 Pedro", a:"1pe", c:5}, {n:"2 Pedro", a:"2pe", c:3}, {n:"1 João", a:"1jo", c:5}, {n:"2 João", a:"2jo", c:1}, {n:"3 João", a:"3jo", c:1}, {n:"Judas", a:"jd", c:1}, {n:"Apocalipse", a:"ap", c:22}
         ];
 
-        let idIngles = ""; let cap = 1; let nomeL = ""; let dVerses = []; let tamFonte = 18;
+        let curL = ""; let curC = 1; let curV = []; let curF = 18;
 
-        function renderizarLivros(filtro = "") {
-            const container = document.getElementById('lista-livros');
-            container.innerHTML = '';
-            dados.filter(l => l.n.toLowerCase().includes(filtro.toLowerCase())).forEach(livro => {
-                const div = document.createElement('div');
-                div.className = 'item'; div.innerText = livro.n;
-                div.onclick = () => verCapitulos(livro);
-                container.appendChild(div);
+        function renderL(f = "") {
+            const c = document.getElementById('l-livros'); c.innerHTML = '';
+            biblia.filter(x => x.n.toLowerCase().includes(f.toLowerCase())).forEach(l => {
+                const d = document.createElement('div'); d.className = 'item'; d.innerText = l.n;
+                d.onclick = () => { curL = l; ir('t-caps'); document.getElementById('n-livro').innerText = l.n; renderC(l); };
+                c.appendChild(d);
             });
         }
 
-        function filtrarLivros() { renderizarLivros(document.getElementById('input-busca').value); }
+        function filtrar() { renderL(document.getElementById('busca').value); }
 
-        function verCapitulos(l) {
-            idIngles = l.i; nomeL = l.n;
-            irPara('tela-capitulos');
-            document.getElementById('nome-livro').innerText = l.n;
-            const container = document.getElementById('lista-capitulos');
-            container.innerHTML = '';
+        function renderC(l) {
+            const c = document.getElementById('l-caps'); c.innerHTML = '';
             for(let i=1; i<=l.c; i++) {
-                const div = document.createElement('div');
-                div.className = 'item'; div.innerText = i;
-                div.onclick = () => abrirGradeVersiculos(i);
-                container.appendChild(div);
+                const d = document.createElement('div'); d.className = 'item'; d.innerText = i;
+                d.onclick = () => { curC = i; ir('t-vers'); document.getElementById('n-cap-v').innerText = `${l.n} ${i}`; fetchV(l.a, i); };
+                c.appendChild(d);
             }
         }
 
-        async function abrirGradeVersiculos(c) {
-            cap = c;
-            irPara('tela-escolher-versiculo');
-            document.getElementById('titulo-cap-v').innerText = `${nomeL} ${cap}`;
-            const container = document.getElementById('lista-versiculos-grade');
-            container.innerHTML = "<p style='color:var(--gold)'>Buscando...</p>";
-
-            const v = document.getElementById('global-versao').value;
+        async function fetchV(abrev, cap) {
+            const cont = document.getElementById('l-vers'); cont.innerHTML = "<p class='msg'>Carregando NVI...</p>";
+            const ver = document.getElementById('v-sel').value;
+            
             try {
-                // TÚNEL DE SEGURANÇA (PROXY) PARA EVITAR BLOQUEIO DE CONEXÃO
-                const urlBase = `https://bible-api.com/${idIngles}+${cap}?translation=${v}`;
-                const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(urlBase)}`);
-                const json = await res.json();
-                const d = JSON.parse(json.contents);
+                // API Abíblia Digital que suporta NVI de verdade
+                const res = await fetch(`https://www.abibliadigital.com.br/api/verses/${ver}/${abrev}/${cap}`);
+                const data = await res.json();
                 
-                dVerses = d.verses;
-                container.innerHTML = '';
-                dVerses.forEach(v => {
-                    const div = document.createElement('div');
-                    div.className = 'item'; div.innerText = v.verse;
-                    div.onclick = () => carregarTexto(v.verse);
-                    container.appendChild(div);
-                });
-            } catch (e) { container.innerHTML = "<p style='color:red'>Erro ao carregar. Verifica a tua net.</p>"; }
+                if (data.verses) {
+                    curV = data.verses;
+                    cont.innerHTML = '';
+                    curV.forEach(v => {
+                        const d = document.createElement('div'); d.className = 'item'; d.innerText = v.number;
+                        d.onclick = () => ler(v.number);
+                        cont.appendChild(d);
+                    });
+                }
+            } catch (e) {
+                cont.innerHTML = "<p class='msg' style='color:red'>Erro na NVI. Tente a versão ACF (Almeida) no topo.</p>";
+            }
         }
 
-        function carregarTexto(vSel) {
-            irPara('tela-leitura');
-            document.getElementById('nome-cap-leitura').innerText = `${nomeL} ${cap}`;
-            const cont = document.getElementById('conteudo');
-            cont.innerHTML = "";
-            dVerses.forEach(v => {
-                const p = document.createElement('p');
-                p.className = `versiculo ${v.verse == vSel ? 'destaque' : ''}`;
-                p.id = `v-${v.verse}`;
-                p.innerHTML = `<span class="num">${v.verse}</span> ${v.text}`;
-                cont.appendChild(p);
+        function ler(vNum) {
+            ir('t-ler'); document.getElementById('n-ler').innerText = `${curL.n} ${curC}`;
+            const c = document.getElementById('conteudo'); c.innerHTML = '';
+            curV.forEach(v => {
+                const p = document.createElement('p'); p.className = `versiculo ${v.number == vNum ? 'destaque' : ''}`;
+                p.id = `v-${v.number}`; p.innerHTML = `<span class="num">${v.number}</span> ${v.text}`;
+                c.appendChild(p);
             });
-            setTimeout(() => {
-                const el = document.getElementById(`v-${vSel}`);
-                if(el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 200);
+            setTimeout(() => { document.getElementById(`v-${vNum}`).scrollIntoView({behavior:'smooth', block:'center'}); }, 200);
         }
 
-        function mudarFonte(n) {
-            tamFonte += n;
-            document.getElementById('conteudo').style.fontSize = tamFonte + 'px';
-        }
+        function mudarF(n) { curF += n; document.getElementById('conteudo').style.fontSize = curF + 'px'; }
+        function trocarV() { if(document.getElementById('t-vers').classList.contains('ativa')) fetchV(curL.a, curC); }
+        function ir(id) { document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa')); document.getElementById(id).classList.add('ativa'); window.scrollTo(0,0); }
 
-        function aoMudarVersao() { if(document.getElementById('tela-escolher-versiculo').classList.contains('ativa')) abrirGradeVersiculos(cap); }
-        
-        function irPara(id) {
-            document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
-            document.getElementById(id).classList.add('ativa');
-            window.scrollTo(0,0);
-        }
-
-        renderizarLivros();
+        renderL();
     </script>
 </body>
 </html>
