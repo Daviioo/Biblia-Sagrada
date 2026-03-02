@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bíblia Premium Pro</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0f0f0f">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3004/3004416.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Merriweather&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #0f0f0f; --panel: #1a1a1a; --gold: #d4af37; --text: #f0f0f0; }
@@ -71,6 +79,22 @@
 
         let curL = null; let curC = 1; let curV = []; let curF = 18;
 
+        // Recupera a versão e o tamanho da fonte guardados na memória ao abrir o App
+        window.onload = () => {
+            const versaoGuardada = localStorage.getItem('biblia_versao');
+            if (versaoGuardada) {
+                document.getElementById('v-sel').value = versaoGuardada;
+            }
+
+            const fonteGuardada = localStorage.getItem('biblia_fonte');
+            if (fonteGuardada) {
+                curF = parseInt(fonteGuardada);
+                document.getElementById('conteudo').style.fontSize = curF + 'px';
+            }
+            
+            renderL();
+        };
+
         function renderL(f = "") {
             const c = document.getElementById('l-livros'); c.innerHTML = '';
             biblia.filter(x => x.n.toLowerCase().includes(f.toLowerCase())).forEach(l => {
@@ -99,7 +123,6 @@
             let url = "";
             let numLivro = biblia.findIndex(x => x.n === curL.n) + 1;
             
-            // Escolhe a API correta de forma inteligente
             if (ver === 'nvi') {
                 url = `https://bolls.life/get-chapter/NVIPT/${numLivro}/${cap}/`;
             } else {
@@ -107,7 +130,6 @@
             }
 
             try {
-                // Tenta ligar diretamente ou passa pelo túnel (Proxy)
                 let res = await fetch(url).catch(() => null);
                 
                 if (!res || !res.ok) {
@@ -116,11 +138,10 @@
 
                 const data = await res.json();
                 
-                // Organiza os dados independentemente de qual servidor respondeu
                 if (Array.isArray(data)) {
-                    curV = data; // Formato Bolls (NVI)
+                    curV = data; 
                 } else if (data.verses) {
-                    curV = data.verses; // Formato BibleAPI (Almeida)
+                    curV = data.verses; 
                 } else {
                     throw new Error("Vazio");
                 }
@@ -147,11 +168,31 @@
             setTimeout(() => { document.getElementById(`v-${vNum}`).scrollIntoView({behavior:'smooth', block:'center'}); }, 200);
         }
 
-        function mudarF(n) { curF += n; document.getElementById('conteudo').style.fontSize = curF + 'px'; }
-        function trocarV() { if(document.getElementById('t-vers').classList.contains('ativa')) fetchV(curC); }
+        function mudarF(n) { 
+            curF += n; 
+            document.getElementById('conteudo').style.fontSize = curF + 'px'; 
+            // Guarda o tamanho da fonte na memória também!
+            localStorage.setItem('biblia_fonte', curF);
+        }
+
+        function trocarV() { 
+            const versaoEscolhida = document.getElementById('v-sel').value;
+            // Guarda a versão na memória do telemóvel
+            localStorage.setItem('biblia_versao', versaoEscolhida);
+            
+            if(document.getElementById('t-vers').classList.contains('ativa')) fetchV(curC); 
+        }
+
         function ir(id) { document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa')); document.getElementById(id).classList.add('ativa'); window.scrollTo(0,0); }
 
-        renderL();
+        // MOTOR DO APLICATIVO (PWA) PARA INSTALAR NO ANDROID/APPLE
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('App Instalável Pronto!', reg))
+                .catch(err => console.log('Erro no App:', err));
+            });
+        }
     </script>
 </body>
 </html>
