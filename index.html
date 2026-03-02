@@ -22,13 +22,14 @@
         #input-busca { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #333; background: var(--panel); color: white; font-size: 16px; }
 
         .tela { display: none; padding: 20px; max-width: 800px; margin: 0 auto; }
-        .ativa { display: block; }
+        .ativa { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 10px; }
         .grid-pequena { grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)); }
         
-        .item { background: var(--panel); padding: 18px 5px; border-radius: 8px; text-align: center; cursor: pointer; border: 1px solid #333; font-weight: bold; }
-        .item:active { background: #222; border-color: var(--gold); }
+        .item { background: var(--panel); padding: 18px 5px; border-radius: 8px; text-align: center; cursor: pointer; border: 1px solid #333; font-weight: bold; transition: 0.2s; }
+        .item:active { background: #222; transform: scale(0.95); border-color: var(--gold); }
         
         .top-nav { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
         .back-btn { color: var(--gold); font-size: 26px; cursor: pointer; background: none; border: none; }
@@ -81,89 +82,6 @@
     </div>
 
     <script>
-        // Use nomes em inglês para a busca na API
         const dados = [
-            {n:"Gênesis", i:"Genesis", c:50}, {n:"Êxodo", i:"Exodus", c:40}, {n:"Levítico", i:"Leviticus", c:27}, {n:"Números", i:"Numbers", c:36}, {n:"Deuteronômio", i:"Deuteronomy", c:34}, {n:"Josué", i:"Joshua", c:24}, {n:"Juízes", i:"Judges", c:21}, {n:"Rute", i:"Rute", c:4}, {n:"1 Samuel", i:"1 Samuel", c:31}, {n:"2 Samuel", i:"2 Samuel", c:24}, {n:"1 Reis", i:"1 Kings", c:22}, {n:"2 Reis", i:"2 Kings", c:25}, {n:"1 Crônicas", i:"1 Chronicles", c:29}, {n:"2 Crônicas", i:"2 Chronicles", c:36}, {n:"Esdras", i:"Ezra", c:10}, {n:"Neemias", i:"Nehemiah", c:13}, {n:"Ester", i:"Esther", c:10}, {n:"Jó", i:"Job", c:42}, {n:"Salmos", i:"Psalms", c:150}, {n:"Provérbios", i:"Proverbs", c:31}, {n:"Eclesiastes", i:"Ecclesiastes", c:12}, {n:"Cantares", i:"Song of Solomon", c:8}, {n:"Isaías", i:"Isaiah", c:66}, {n:"Jeremias", i:"Jeremiah", c:52}, {n:"Lamentações", i:"Lamentations", c:5}, {n:"Ezequiel", i:"Ezekiel", c:48}, {n:"Daniel", i:"Daniel", c:12}, {n:"Oseias", i:"Hosea", c:14}, {n:"Joel", i:"Joel", c:3}, {n:"Amós", i:"Amos", c:9}, {n:"Obadias", i:"Obadiah", c:1}, {n:"Jonas", i:"Jonah", c:4}, {n:"Miqueias", i:"Micah", c:7}, {n:"Naum", i:"Nahum", c:3}, {n:"Habacuque", i:"Habakkuk", c:3}, {n:"Sofonias", i:"Zephaniah", c:3}, {n:"Ageu", i:"Haggai", c:2}, {n:"Zacarias", i:"Zechariah", c:14}, {n:"Malaquias", i:"Malachi", c:4},
-            {n:"Mateus", i:"Matthew", c:28}, {n:"Marcos", i:"Mark", c:16}, {n:"Lucas", i:"Luke", c:24}, {n:"João", i:"John", c:21}, {n:"Atos", i:"Acts", c:28}, {n:"Romanos", i:"Romans", c:16}, {n:"1 Coríntios", i:"1 Corinthians", c:16}, {n:"2 Coríntios", i:"2 Corinthians", c:13}, {n:"Gálatas", i:"Galatians", c:6}, {n:"Efésios", i:"Ephesians", c:6}, {n:"Filipenses", i:"Philippians", c:4}, {n:"Colossenses", i:"Colossians", c:4}, {n:"1 Tessalonicenses", i:"1 Thessalonians", c:5}, {n:"2 Tessalonicenses", i:"2 Thessalonians", c:3}, {n:"1 Timóteo", i:"1 Timothy", c:6}, {n:"2 Timóteo", i:"2 Timothy", c:4}, {n:"Tito", i:"Titus", c:3}, {n:"Filemom", i:"Philemon", c:1}, {n:"Hebreus", i:"Hebrews", c:13}, {n:"Tiago", i:"James", c:5}, {n:"1 Pedro", i:"1 Peter", c:5}, {n:"2 Pedro", i:"2 Peter", c:3}, {n:"1 João", i:"1 John", c:5}, {n:"2 João", i:"2 John", c:1}, {n:"3 João", i:"3 John", c:1}, {n:"Judas", i:"Jude", c:1}, {n:"Apocalipse", i:"Revelation", c:22}
-        ];
-
-        let idIngles = ""; let cap = 1; let nomeL = ""; let dVerses = [];
-
-        function renderizarLivros(filtro = "") {
-            const container = document.getElementById('lista-livros');
-            container.innerHTML = '';
-            dados.filter(l => l.n.toLowerCase().includes(filtro.toLowerCase())).forEach(livro => {
-                const div = document.createElement('div');
-                div.className = 'item'; div.innerText = livro.n;
-                div.onclick = () => verCapitulos(livro);
-                container.appendChild(div);
-            });
-        }
-
-        function filtrarLivros() { renderizarLivros(document.getElementById('input-busca').value); }
-
-        function verCapitulos(l) {
-            idIngles = l.i; nomeL = l.n;
-            irPara('tela-capitulos');
-            document.getElementById('nome-livro').innerText = l.n;
-            const container = document.getElementById('lista-capitulos');
-            container.innerHTML = '';
-            for(let i=1; i<=l.c; i++) {
-                const div = document.createElement('div');
-                div.className = 'item'; div.innerText = i;
-                div.onclick = () => abrirGradeVersiculos(i);
-                container.appendChild(div);
-            }
-        }
-
-        async function abrirGradeVersiculos(c) {
-            cap = c;
-            irPara('tela-escolher-versiculo');
-            document.getElementById('titulo-cap-v').innerText = `${nomeL} ${cap}`;
-            const container = document.getElementById('lista-versiculos-grade');
-            container.innerHTML = "<p style='color:var(--gold)'>Buscando...</p>";
-
-            const v = document.getElementById('global-versao').value;
-            try {
-                const res = await fetch(`https://bible-api.com/${idIngles}+${cap}?translation=${v}`);
-                const d = await res.json();
-                dVerses = d.verses;
-                container.innerHTML = '';
-                dVerses.forEach(v => {
-                    const div = document.createElement('div');
-                    div.className = 'item'; div.innerText = v.verse;
-                    div.onclick = () => carregarTexto(v.verse);
-                    container.appendChild(div);
-                });
-            } catch (e) { container.innerHTML = "<p style='color:red'>Erro ao carregar versículos.</p>"; }
-        }
-
-        function carregarTexto(vSel) {
-            irPara('tela-leitura');
-            document.getElementById('nome-cap-leitura').innerText = `${nomeL} ${cap}`;
-            const cont = document.getElementById('conteudo');
-            cont.innerHTML = "";
-            dVerses.forEach(v => {
-                const p = document.createElement('p');
-                p.className = `versiculo ${v.verse == vSel ? 'destaque' : ''}`;
-                p.id = `v-${v.verse}`;
-                p.innerHTML = `<span class="num">${v.verse}</span> ${v.text}`;
-                cont.appendChild(p);
-            });
-            setTimeout(() => {
-                document.getElementById(`v-${vSel}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 200);
-        }
-
-        function aoMudarVersao() { if(document.getElementById('tela-escolher-versiculo').classList.contains('ativa')) abrirGradeVersiculos(cap); }
-        
-        function irPara(id) {
-            document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
-            document.getElementById(id).classList.add('ativa');
-            window.scrollTo(0,0);
-        }
-
-        renderizarLivros();
-    </script>
-</body>
-</html>
+            {n:"Gênesis", i:"Genesis", c:50}, {n:"Êxodo", i:"Exodus", c:40}, {n:"Levítico", i:"Leviticus", c:27}, {n:"Números", i:"Numbers", c:36}, {n:"Deuteronômio", i:"Deuteronomy", c:34}, {n:"Josué", i:"Joshua", c:24}, {n:"Juízes", i:"Judges", c:21}, {n:"Rute", i:"Ruth", c:4}, {n:"1 Samuel", i:"1 Samuel", c:31}, {n:"2 Samuel", i:"2 Samuel", c:24}, {n:"1 Reis", i:"1 Kings", c:22}, {n:"2 Reis", i:"2 Kings", c:25}, {n:"1 Crônicas", i:"1 Chronicles", c:29}, {n:"2 Crônicas", i:"2 Chronicles", c:36}, {n:"
+                
