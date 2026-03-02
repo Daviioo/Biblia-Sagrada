@@ -16,8 +16,8 @@
             align-items: center; border-bottom: 2px solid var(--gold); z-index: 1000;
         }
         .logo-app { color: var(--gold); font-family: 'Merriweather', serif; font-weight: bold; font-size: 18px; }
-        .controles-topo { display: flex; gap: 8px; align-items: center; }
-        .btn-fonte { background: #000; color: var(--gold); border: 1px solid var(--gold); padding: 4px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .controles { display: flex; gap: 8px; align-items: center; }
+        .btn-fonte { background: #000; color: var(--gold); border: 1px solid var(--gold); padding: 5px 10px; border-radius: 5px; font-weight: bold; cursor: pointer; }
         .seletor-versao { background: #000; color: var(--gold); border: 1px solid var(--gold); padding: 5px; border-radius: 5px; font-weight: bold; font-size: 13px; }
 
         .busca-container { padding: 15px 20px; background: #151515; }
@@ -31,12 +31,12 @@
         .grid-pequena { grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)); }
         
         .item { background: var(--panel); padding: 18px 5px; border-radius: 8px; text-align: center; cursor: pointer; border: 1px solid #333; font-weight: bold; }
-        .item:active { background: #222; transform: scale(0.95); border-color: var(--gold); }
+        .item:active { background: #222; border-color: var(--gold); }
         
         .top-nav { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
         .back-btn { color: var(--gold); font-size: 26px; cursor: pointer; background: none; border: none; }
         
-        #conteudo { line-height: 1.8; font-family: 'Merriweather', serif; font-size: 18px; padding-bottom: 80px; transition: font-size 0.2s; }
+        #conteudo { line-height: 1.8; font-family: 'Merriweather', serif; font-size: 18px; padding-bottom: 80px; transition: 0.2s; }
         .versiculo { margin-bottom: 16px; padding: 8px; border-radius: 5px; }
         .num { color: var(--gold); font-weight: bold; margin-right: 12px; font-size: 0.8em; }
         .destaque { background: rgba(212, 175, 55, 0.15); border-left: 3px solid var(--gold); }
@@ -46,7 +46,7 @@
 
     <div class="header-fixo">
         <div class="logo-app">Bíblia Premium</div>
-        <div class="controles-topo">
+        <div class="controles">
             <button class="btn-fonte" onclick="mudarFonte(-2)">A-</button>
             <button class="btn-fonte" onclick="mudarFonte(2)">A+</button>
             <select id="global-versao" class="seletor-versao" onchange="aoMudarVersao()">
@@ -131,11 +131,12 @@
 
             const v = document.getElementById('global-versao').value;
             try {
-                // USA PROXY PARA EVITAR ERRO DE CONEXÃO NO GITHUB PAGES
-                const url = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://bible-api.com/${idIngles}+${cap}?translation=${v}`)}`;
-                const res = await fetch(url);
+                // TÚNEL DE SEGURANÇA (PROXY) PARA EVITAR BLOQUEIO DE CONEXÃO
+                const urlBase = `https://bible-api.com/${idIngles}+${cap}?translation=${v}`;
+                const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(urlBase)}`);
                 const json = await res.json();
                 const d = JSON.parse(json.contents);
+                
                 dVerses = d.verses;
                 container.innerHTML = '';
                 dVerses.forEach(v => {
@@ -144,7 +145,7 @@
                     div.onclick = () => carregarTexto(v.verse);
                     container.appendChild(div);
                 });
-            } catch (e) { container.innerHTML = "<p style='color:red'>Erro ao carregar versículos.</p>"; }
+            } catch (e) { container.innerHTML = "<p style='color:red'>Erro ao carregar. Verifica a tua net.</p>"; }
         }
 
         function carregarTexto(vSel) {
@@ -167,8 +168,6 @@
 
         function mudarFonte(n) {
             tamFonte += n;
-            if(tamFonte < 12) tamFonte = 12;
-            if(tamFonte > 30) tamFonte = 30;
             document.getElementById('conteudo').style.fontSize = tamFonte + 'px';
         }
 
